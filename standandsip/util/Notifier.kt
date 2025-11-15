@@ -28,11 +28,9 @@ private fun ensureChannel(context: Context) {
     }
 }
 
-/** Sticky (ongoing) reminder that stays until user taps Done/Snooze. */
 fun showStickyReminder(context: Context, title: String, text: String, tag: String) {
     ensureChannel(context)
 
-    // Open the dialog if user taps the body
     val openIntent = Intent(context, ReminderDialogActivity::class.java).apply {
         putExtra("title", title)
         putExtra("text", text)
@@ -46,7 +44,6 @@ fun showStickyReminder(context: Context, title: String, text: String, tag: Strin
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    // DONE action -> ActionReceiver
     val doneIntent = Intent(context, ActionReceiver::class.java).apply {
         action = "com.standandsip.ACTION_DONE"
         putExtra("tag", tag)
@@ -56,7 +53,6 @@ fun showStickyReminder(context: Context, title: String, text: String, tag: Strin
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    // SNOOZE action -> ActionReceiver
     val snoozeIntent = Intent(context, ActionReceiver::class.java).apply {
         action = "com.standandsip.ACTION_SNOOZE"
         putExtra("tag", tag)
@@ -84,7 +80,6 @@ fun showStickyReminder(context: Context, title: String, text: String, tag: Strin
     NotificationManagerCompat.from(context).notify(tag.hashCode(), n)
 }
 
-/** Optionally clear a specific sticky reminder by tag */
 fun cancelReminder(context: Context, tag: String) {
     NotificationManagerCompat.from(context).cancel(tag.hashCode())
 }

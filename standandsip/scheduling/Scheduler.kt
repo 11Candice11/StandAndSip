@@ -15,7 +15,6 @@ object Scheduler {
         WorkManager.getInstance(context).cancelAllWorkByTag(tag)
     }
 
-    /** Re-schedule Stand/Water/Bath starting now using saved settings. */
     suspend fun scheduleAllFromNow(context: Context) {
         val s = Prefs.flow(context).first()
         scheduleStream(context, "stand_stream", "Time to stand", "Let’s do 10 seconds on your feet ❤️", s)
@@ -23,7 +22,6 @@ object Scheduler {
         scheduleStream(context, "bath_stream",  "Bathroom check", "Quick bathroom break 🚻", s)
     }
 
-    /** Enqueue next for a single tag (used by Worker after it fires). */
     suspend fun enqueueNext(context: Context, tag: String) {
         val s = Prefs.flow(context).first()
         val (title, text) = when (tag) {
@@ -56,7 +54,6 @@ object Scheduler {
         WorkManager.getInstance(context).enqueue(req)
     }
 
-    /** Compute minutes until next tick that falls inside [start,end) with [interval]. */
     private fun nextDelayMinutes(s: Prefs.Settings): Int {
         val now = Calendar.getInstance()
         val nowMin = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
@@ -65,7 +62,6 @@ object Scheduler {
         val end   = s.endMin
         val step  = s.intervalMin.coerceAtLeast(15) // guard
 
-        // If current window has ended, schedule at tomorrow's start
         if (!isInWindow(nowMin, start, end)) {
             val minutesUntilStart = (
                     if (nowMin < start) start - nowMin else (24*60 - nowMin) + start
@@ -73,7 +69,6 @@ object Scheduler {
             return minutesUntilStart
         }
 
-        // In window: snap to next interval boundary from start
         val elapsedFromStart = nowMin - start
         val next = ((elapsedFromStart / step) + 1) * step + start
         return next - nowMin

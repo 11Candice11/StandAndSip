@@ -33,7 +33,6 @@ import com.standandsip.scheduling.Scheduler
 import com.standandsip.util.RefreshBus
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -60,8 +59,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-/* -------------------- DASHBOARD (Home) -------------------- */
-
 @Composable
 fun DashboardScreen(onOpenHistory: () -> Unit) {
     val context = LocalContext.current
@@ -82,18 +79,15 @@ fun DashboardScreen(onOpenHistory: () -> Unit) {
     }
     LaunchedEffect(Unit) { reload() }
 
-    // Refresh on resume
     DisposableEffect(lifecycleOwner) {
         val obs = LifecycleEventObserver { _, e -> if (e == Lifecycle.Event.ON_RESUME) scope.launch { reload() } }
         lifecycleOwner.lifecycle.addObserver(obs)
         onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
     }
-    // Refresh when popup logs success
     LaunchedEffect(Unit) {
         RefreshBus.events.collectLatest { reload() }
     }
 
-    // Settings
     val settings by Prefs.flow(context).collectAsState(initial = Prefs.Settings())
     var startMin by remember(settings) { mutableStateOf(settings.startMin) }
     var endMin   by remember(settings) { mutableStateOf(settings.endMin) }
@@ -135,7 +129,6 @@ fun DashboardScreen(onOpenHistory: () -> Unit) {
             OutlinedButton(onClick = onOpenHistory) { Text("View history") }
         }
 
-        // Settings card
         SettingsCard(
             startMin = startMin,
             endMin = endMin,
@@ -156,7 +149,6 @@ fun DashboardScreen(onOpenHistory: () -> Unit) {
             showTimePicker = ::showTimePicker
         )
 
-        // One-minute test buttons
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -245,8 +237,6 @@ fun StatCard(
         }
     }
 }
-
-/* -------------------- SETTINGS CARD -------------------- */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

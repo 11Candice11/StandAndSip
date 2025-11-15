@@ -1,4 +1,3 @@
-// CountdownViewModel.kt
 package com.standandsip.ui
 
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CountdownViewModel : ViewModel() {
-    private val _secondsLeft = MutableStateFlow(10)           // was 60
+    private val _secondsLeft = MutableStateFlow(60)
     val secondsLeft: StateFlow<Int> = _secondsLeft
 
     private val _isRunning = MutableStateFlow(false)

@@ -98,7 +98,6 @@ fun ReminderDialogScreen(
                 Text(text, style = MaterialTheme.typography.bodyLarge)
                 Spacer(Modifier.height(24.dp))
 
-                // Stack buttons so they never clip on small screens
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Button(onClick = {
                         if (isStand) {
@@ -109,7 +108,6 @@ fun ReminderDialogScreen(
                                         LogEntry(type = "stand", timestamp = System.currentTimeMillis())
                                     )
                                     RefreshBus.fire()
-                                    // Reset next reminder (test: +1 min)
                                     Scheduler.cancelTag(context, "stand_stream")
                                     wm.enqueue(
                                         OneTimeWorkRequestBuilder<ReminderWorker>()

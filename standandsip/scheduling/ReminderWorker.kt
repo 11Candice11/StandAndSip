@@ -21,10 +21,8 @@ class ReminderWorker(
         val text  = inputData.getString(KEY_TEXT)  ?: ""
         val tag   = inputData.getString(KEY_TAG)   ?: "stand_stream"
 
-        // 🔔 Show a sticky, non-dismissible notification (with Done/Snooze actions)
         showStickyReminder(applicationContext, title, text, tag)
 
-        // 📅 Schedule the next reminder according to Settings (quiet hours + frequency)
         Scheduler.enqueueNext(applicationContext, tag)
 
         return Result.success()

@@ -14,9 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-/**
- * Handles notification button actions like "Mark done" or "Snooze"
- */
 class ActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
@@ -24,7 +21,6 @@ class ActionReceiver : BroadcastReceiver() {
 
         when (action) {
             "com.standandsip.ACTION_DONE" -> {
-                // Log completion instantly
                 CoroutineScope(Dispatchers.IO).launch {
                     val db = AppDatabase.getDatabase(context)
                     val type = when (tag) {
@@ -34,7 +30,6 @@ class ActionReceiver : BroadcastReceiver() {
                     }
                     db.logDao().insert(LogEntry(type = type, timestamp = System.currentTimeMillis()))
 
-                    // Schedule next reminder (+1 min for testing)
                     val data = workDataOf(
                         ReminderWorker.KEY_TITLE to when (tag) {
                             "water_stream" -> "Hydration check"
